@@ -78,4 +78,11 @@ public class Lecture {
 
     @Column(nullable = false)
     private String schedule; // 수업 일정
+
+    @Column(nullable = false)
+    private boolean isDone; // 방과후 신청 기간이 끝났는지
+
+    public boolean isDone() {
+        return end_date.isBefore(LocalDateTime.now());
+    }
 }
