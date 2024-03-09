@@ -13,6 +13,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author Yunjisnag
+ * @since 2024.03.07
+ * @version 1.0
+ * @category Entity
+ * @apiNote Lecture Entity
+ */
 @Entity
 @Table(name = "lectures")
 @Getter

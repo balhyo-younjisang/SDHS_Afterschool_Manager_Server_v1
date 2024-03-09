@@ -1,5 +1,7 @@
 package com.yunjisang.afterschool.afterschool.domain.Lecture.domain;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.yunjisang.afterschool.afterschool.global.common.AbstractCodedEnumConverter;
 import com.yunjisang.afterschool.afterschool.global.common.CodeEnum;
 
@@ -12,6 +14,7 @@ public enum LectureDivision implements CodeEnum<Integer> {
         this.code = code;
     }
 
+    @JsonValue
     public Integer getCode() {
         return code;
     }
@@ -21,5 +24,15 @@ public enum LectureDivision implements CodeEnum<Integer> {
         public Converter() {
             super(LectureDivision.class);
         }
+    }
+
+    @JsonCreator
+    public static LectureDivision from(int input) {
+        for (LectureDivision lectureDivision : LectureDivision.values()) {
+            if (lectureDivision.getCode().equals(input)) {
+                return lectureDivision;
+            }
+        }
+        return null;
     }
 }
