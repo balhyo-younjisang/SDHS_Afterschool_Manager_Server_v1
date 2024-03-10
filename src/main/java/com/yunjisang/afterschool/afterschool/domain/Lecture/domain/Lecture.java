@@ -2,6 +2,8 @@ package com.yunjisang.afterschool.afterschool.domain.Lecture.domain;
 
 import java.time.LocalDateTime;
 
+import com.yunjisang.afterschool.afterschool.domain.Lecture.dto.LectureResponseDTO.CreateLectureResponseDTO;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -87,9 +89,18 @@ public class Lecture {
     private String schedule; // 수업 일정
 
     @Column(nullable = false)
-    private boolean isDone; // 방과후 신청 기간이 끝났는지
+    @Builder.Default
+    private boolean isDone = false; // 방과후 신청 기간이 끝났는지
 
     public boolean isDone() {
         return end_date.isBefore(LocalDateTime.now());
+    }
+
+    public CreateLectureResponseDTO toDTO() {
+        return CreateLectureResponseDTO.builder().all_hours(this.all_hours).day(this.day).division(this.division)
+                .duration(this.duration).end_date(this.end_date).goals(this.goals).head_count(this.head_count)
+                .lectureName(this.name).lecture_room(this.lecture_room).materials(this.materials).method(this.method)
+                .schedule(this.schedule).select_method(this.select_method).start_date(this.start_date)
+                .subsidy(this.subsidy).target(this.target).teacher(this.teacher).tuition(this.tuition).build();
     }
 }

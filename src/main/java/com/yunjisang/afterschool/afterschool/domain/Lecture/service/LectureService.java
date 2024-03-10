@@ -5,10 +5,14 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import com.yunjisang.afterschool.afterschool.domain.Lecture.domain.Lecture;
 import com.yunjisang.afterschool.afterschool.domain.Lecture.domain.LectureDivision;
+import com.yunjisang.afterschool.afterschool.domain.Lecture.dto.LectureRequestDTO.CreateLectureRequestDTO;
+import com.yunjisang.afterschool.afterschool.domain.Lecture.dto.LectureResponseDTO.CreateLectureResponseDTO;
 import com.yunjisang.afterschool.afterschool.domain.Lecture.repository.LectureRepository;
+import com.yunjisang.afterschool.afterschool.global.common.SuccessResponse;
 import com.yunjisang.afterschool.afterschool.global.exception.CustomException;
 import com.yunjisang.afterschool.afterschool.global.exception.ErrorCode;
 
@@ -36,13 +40,48 @@ public class LectureService {
      * 
      * @param lecture
      */
-    public void save(Lecture lecture) {
+    public SuccessResponse<CreateLectureResponseDTO> save(CreateLectureRequestDTO createLectureRequestDTO) {
+        Assert.notNull(createLectureRequestDTO.getAll_hours(), "총 수업 시수 항목은 필수 입력 항목입니다.");
+        Assert.notNull(createLectureRequestDTO.getDuration(), "수업 시간 항목은 필수 입력 항목입니다.");
+        Assert.hasLength(createLectureRequestDTO.getGoals(), "수업 목표 항목은 필수 입력 항목입니다.");
+        Assert.notNull(createLectureRequestDTO.getHead_count(), "최대 수강 인원 수 항목은 필수 입력 항목입니다.");
+        Assert.hasLength(createLectureRequestDTO.getLectureName(), "강의 이름 항목은 필수 입력 항목입니다.");
+        Assert.hasLength(createLectureRequestDTO.getLecture_room(), "수업 장소 항목은 필수 입력 항목입니다.");
+        Assert.hasLength(createLectureRequestDTO.getMaterials(), "준비물 항목은 필수 입력 항목입니다.");
+        Assert.hasLength(createLectureRequestDTO.getSchedule(), "수업 일정 항목은 필수 입력 항목입니다.");
+        Assert.hasLength(createLectureRequestDTO.getSelect_method(), "선별 방법 항목은 필수 입력 항목입니다.");
+        Assert.hasLength(createLectureRequestDTO.getSubsidy(), "지원금 항목은 필수 입력 항목입니다.");
+        Assert.hasLength(createLectureRequestDTO.getTarget(), "운영 방식 항목은 필수 입력 항목입니다.");
+        Assert.hasLength(createLectureRequestDTO.getTeacher(), "담당 선생님 성함 항목은 필수로 입력해주세요.");
+        Assert.notNull(createLectureRequestDTO.getTuition(), "예상 수강료 항목은 필수 입력 항목입니다.");
+        Assert.notNull(createLectureRequestDTO.getDay(), "진행 요일 항목은 필수 입력 항목입니다.");
+        Assert.notNull(createLectureRequestDTO.getDivision(), "강의 분류 항목은 필수 입력 항목입니다.");
+        Assert.notNull(createLectureRequestDTO.getEnd_date(), "종료 날짜 항목은 필수 입력 항목입니다.");
+        Assert.notNull(createLectureRequestDTO.getMethod(), "운영 방식 항목은 필수 입력 항목입니다.");
+        Assert.notNull(createLectureRequestDTO.getStart_date(), "시작 날짜 항목은 필수 입력 항목입니다.");
+
+        Lecture lecture = Lecture.builder().all_hours(createLectureRequestDTO.getAll_hours())
+                .day(createLectureRequestDTO.getDay()).division(createLectureRequestDTO.getDivision())
+                .duration(createLectureRequestDTO.getDuration()).end_date(createLectureRequestDTO.getEnd_date())
+                .goals(createLectureRequestDTO.getGoals()).head_count(createLectureRequestDTO.getHead_count())
+                .lecture_room(createLectureRequestDTO.getLecture_room())
+                .materials(createLectureRequestDTO.getMaterials()).method(createLectureRequestDTO.getMethod())
+                .name(createLectureRequestDTO.getLectureName()).schedule(createLectureRequestDTO.getSchedule())
+                .select_method(createLectureRequestDTO.getSelect_method())
+                .start_date(createLectureRequestDTO.getStart_date()).subsidy(createLectureRequestDTO.getSubsidy())
+                .target(createLectureRequestDTO.getTarget()).teacher(createLectureRequestDTO.getTeacher())
+                .tuition(createLectureRequestDTO.getTuition()).build();
+
         Optional<Lecture> alreadyLecture = lectureRepository.findByName(lecture.getName());
 
-        if (alreadyLecture.isPresent() && alreadyLecture.get().isDone()) {
+        // 기존 등록된 강의가 끝나지 않은 상태라면 LECTURE_DUPLICATE 에러 처리
+        if (alreadyLecture.isPresent() && !alreadyLecture.get().isDone()) {
             throw new CustomException(ErrorCode.LECTURE_DUPLICATE);
         }
-        lectureRepository.save(lecture);
+        Lecture createdLecture = lectureRepository.save(lecture);
+        CreateLectureResponseDTO responseLecture = createdLecture.toDTO();
+
+        return new SuccessResponse<CreateLectureResponseDTO>(true, responseLecture);
     }
 
     /**
