@@ -10,13 +10,16 @@ import org.springframework.util.Assert;
 import com.yunjisang.afterschool.afterschool.domain.Lecture.domain.Lecture;
 import com.yunjisang.afterschool.afterschool.domain.Lecture.domain.LectureDivision;
 import com.yunjisang.afterschool.afterschool.domain.Lecture.dto.LectureRequestDTO.CreateLectureRequestDTO;
-import com.yunjisang.afterschool.afterschool.domain.Lecture.dto.LectureResponseDTO.CreateLectureResponseDTO;
+import com.yunjisang.afterschool.afterschool.domain.Lecture.dto.LectureRequestDTO.SearchLectureRequestDTO;
+import com.yunjisang.afterschool.afterschool.domain.Lecture.dto.LectureResponseDTO.BaseLectureResponseDTO;
 import com.yunjisang.afterschool.afterschool.domain.Lecture.repository.LectureRepository;
 import com.yunjisang.afterschool.afterschool.global.common.SuccessResponse;
 import com.yunjisang.afterschool.afterschool.global.exception.CustomException;
 import com.yunjisang.afterschool.afterschool.global.exception.ErrorCode;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +43,7 @@ public class LectureService {
      * 
      * @param lecture
      */
-    public SuccessResponse<CreateLectureResponseDTO> save(CreateLectureRequestDTO createLectureRequestDTO) {
+    public SuccessResponse<BaseLectureResponseDTO> save(CreateLectureRequestDTO createLectureRequestDTO) {
         Assert.notNull(createLectureRequestDTO.getAll_hours(), "총 수업 시수 항목은 필수 입력 항목입니다.");
         Assert.notNull(createLectureRequestDTO.getDuration(), "수업 시간 항목은 필수 입력 항목입니다.");
         Assert.hasLength(createLectureRequestDTO.getGoals(), "수업 목표 항목은 필수 입력 항목입니다.");
@@ -79,9 +82,9 @@ public class LectureService {
             throw new CustomException(ErrorCode.LECTURE_DUPLICATE);
         }
         Lecture createdLecture = lectureRepository.save(lecture);
-        CreateLectureResponseDTO responseLecture = createdLecture.toDTO();
+        BaseLectureResponseDTO responseLecture = createdLecture.toDTO();
 
-        return new SuccessResponse<CreateLectureResponseDTO>(true, responseLecture);
+        return new SuccessResponse<BaseLectureResponseDTO>(true, responseLecture);
     }
 
     /**
@@ -117,5 +120,9 @@ public class LectureService {
      */
     public Page<Lecture> findLecturesByDivision(LectureDivision lectureDivision, Pageable pageable) {
         return lectureRepository.findAllByDivision(lectureDivision, pageable);
+    }
+
+    public SuccessResponse<List<BaseLectureResponseDTO>> findLectures(SearchLectureRequestDTO searchLectureRequestDTO) {
+        return null;
     }
 }

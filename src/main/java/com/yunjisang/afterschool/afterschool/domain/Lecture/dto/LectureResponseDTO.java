@@ -12,12 +12,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 public class LectureResponseDTO {
-
     @Data
-    @Builder
-    @AllArgsConstructor
     @NoArgsConstructor
-    public static class CreateLectureResponseDTO {
+    @AllArgsConstructor
+    @Builder
+    public static class BaseLectureResponseDTO {
         private String lectureName; // 강의 이름
         private String teacher; // 담당
         private LectureDivision division; // 분류
@@ -37,4 +36,5 @@ public class LectureResponseDTO {
         private String goals; // 수업 목표
         private String schedule; // 수업 일정
     }
+
 }

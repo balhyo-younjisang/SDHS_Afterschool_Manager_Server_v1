@@ -2,7 +2,7 @@ package com.yunjisang.afterschool.afterschool.domain.Lecture.domain;
 
 import java.time.LocalDateTime;
 
-import com.yunjisang.afterschool.afterschool.domain.Lecture.dto.LectureResponseDTO.CreateLectureResponseDTO;
+import com.yunjisang.afterschool.afterschool.domain.Lecture.dto.LectureResponseDTO.BaseLectureResponseDTO;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -96,8 +96,8 @@ public class Lecture {
         return end_date.isBefore(LocalDateTime.now());
     }
 
-    public CreateLectureResponseDTO toDTO() {
-        return CreateLectureResponseDTO.builder().all_hours(this.all_hours).day(this.day).division(this.division)
+    public BaseLectureResponseDTO toDTO() {
+        return BaseLectureResponseDTO.builder().all_hours(this.all_hours).day(this.day).division(this.division)
                 .duration(this.duration).end_date(this.end_date).goals(this.goals).head_count(this.head_count)
                 .lectureName(this.name).lecture_room(this.lecture_room).materials(this.materials).method(this.method)
                 .schedule(this.schedule).select_method(this.select_method).start_date(this.start_date)
